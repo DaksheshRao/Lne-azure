@@ -9,21 +9,10 @@ pool:
 
 variables:
   # Define your Azure Service Principal credentials as pipeline variables
-  azureSubscription: '<Azure Subscription Name>'
-  clientId: '<Service Principal Client ID>'
-  clientSecret: $(azureServicePrincipalKey) # Define this variable as a secret variable in your pipeline settings
-  tenantId: '<Azure Tenant ID>'
-  resourceGroupName: '<Azure Resource Group Name>'
-
-steps:
-- checkout: self
-
-- task: CopyFiles@2
-  displayName: 'Copy files to $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)'
-    Contents: '**' # Copy all files
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  SUBSCRIPTION_ID: $(SUBSCRIPTION_ID)
+  CLIENT_ID: $(CLIENT_ID)
+  CLIENT_SECRET: $(CLIENT_SECRET) # Define this variable as a secret variable in your pipeline settings
+  TENANT_ID: $(TENANT_ID)
 
 - script: |
     sudo apt-get update -q -y
