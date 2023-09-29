@@ -13,6 +13,14 @@ variables:
   CLIENT_ID: $(CLIENT_ID)
   CLIENT_SECRET: $(CLIENT_SECRET) # Define this variable as a secret variable in your pipeline settings
   TENANT_ID: $(TENANT_ID)
+steps:
+- checkout: self
+- task: CopyFiles@2
+  displayName: 'Copy files to $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**' # Copy all files
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - script: |
     sudo apt-get update -q -y
