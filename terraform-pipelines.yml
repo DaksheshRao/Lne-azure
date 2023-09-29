@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: build_stage
+  displayName: "Terraform Build Stage"
+
+  jobs:
+      - job: Build
+        displayName: "Networking Build Job"
+        variables:
+        - name: deploymentPath
+          value: "$(Build.SourcesDirectory)" 
+        steps:
+          - task: Bash@3
+            displayName: "Terraform Init, Format and Validate"
+            env:
+                ARM_TENANT_ID: $(tenant_id)
+                ARM_CLIENT_ID: $(client_id)
+                ARM_CLIENT_SECRET: $(client_secret)
+                ARM_SUBSCRIPTION_ID: $(subscription_id)
+            inputs:
+              workingDirectory: $(deploymentPath)
+              targetType: 'inline'
+              script: |
+                terraform init -backend-config="${{ parameters.environment }}_backend.tfvars"
+                terraform fmt
+                terraform validate
+                terrafrom plan
