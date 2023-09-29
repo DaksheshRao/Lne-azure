@@ -15,7 +15,7 @@ stages:
 
   jobs:
       - job: Build
-        displayName: "Networking Build Job"
+        displayName: "Build Job"
         variables:
         - name: deploymentPath
           value: "$(Build.SourcesDirectory)" 
