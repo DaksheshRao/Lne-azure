@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "resource_group" {
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet01"
-  address_space       = ["10.0.0.0/24"]
+  address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.resource_group.location
   resource_group_name = azurerm_resource_group.resource_group.name
   depends_on          = [azurerm_resource_group.resource_group]
@@ -28,6 +28,7 @@ resource "azurerm_network_interface" "vm-nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet01.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
   depends_on = [azurerm_subnet.subnet01]
 }
@@ -58,6 +59,13 @@ resource "azurerm_linux_virtual_machine" "vm" {
   depends_on = [azurerm_network_interface.vm-nic]
 }
 
+resource "azurerm_public_ip" "public_ip" {
+  name                = "vm-public-ip"
+  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = azurerm_resource_group.resource_group.location
+  allocation_method   = "Static"
+}
+
 resource "azurerm_availability_set" "availability_set" {
   name                = "${var.prefix}-aset"
   location            = azurerm_resource_group.resource_group.location
@@ -69,11 +77,11 @@ resource "azurerm_storage_account" "storage_account" {
   name                = "cubastionstorageaccount"
   resource_group_name = azurerm_resource_group.resource_group.name
 
-  location                      = azurerm_resource_group.resource_group.location
-  account_tier                  = "Premium"
-  account_replication_type      = "LRS"
-  public_network_access_enabled = false
-  depends_on = [ azurerm_resource_group.resource_group, azurerm_subnet.subnet01 ]
+  location                 = azurerm_resource_group.resource_group.location
+  account_tier             = "Premium"
+  account_replication_type = "LRS"
+  # public_network_access_enabled = false
+  depends_on = [azurerm_resource_group.resource_group, azurerm_subnet.subnet01]
 }
 
 resource "azurerm_private_endpoint" "example" {
@@ -111,57 +119,12 @@ resource "azurerm_storage_share" "fileshare01" {
   name                 = "fileshare01"
   storage_account_name = azurerm_storage_account.storage_account.name
   quota                = 5
-  depends_on = [ azurerm_storage_account.storage_account ]
+  depends_on           = [azurerm_storage_account.storage_account]
 }
 
 resource "azurerm_storage_share" "fileshare02" {
   name                 = "fileshare02"
   storage_account_name = azurerm_storage_account.storage_account.name
   quota                = 5
-  depends_on = [ azurerm_storage_account.storage_account ]
-}
-
-
-################################-----VNET-02----#####################################################################
-
-
-
-resource "azurerm_kubernetes_cluster" "k8s-cluster" {
-  name                = "${var.prefix}-k8s-cluster"
-  resource_group_name = azurerm_resource_group.A7Z_DEV_jpeast.name
-  location            = azurerm_resource_group.A7Z_DEV_jpeast.location
-  dns_prefix          = "${var.resource_group_name_common}-k8s-cluster-dns"
-
-  default_node_pool {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_DS2_v2"
-    vnet_subnet_id  = data.azurerm_subnet.subnetAks.id
-  }
-
-  linux_profile {
-    admin_username = "linuxusr"
-    ssh_key {
-      key_data = local.public_key
-    }
-  }
-
-  network_profile {
-    network_plugin    = "azure"
-  }
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  ingress_application_gateway {
-    gateway_id = data.azurerm_application_gateway.dev-app-gateway.id
-  }
-
-  role_based_access_control_enabled = true
-  private_cluster_enabled           = true
-
-  depends_on = [
-    data.azurerm_application_gateway.dev-app-gateway,
-  ]
+  depends_on           = [azurerm_storage_account.storage_account]
 }
