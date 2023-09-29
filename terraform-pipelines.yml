@@ -25,7 +25,7 @@ steps:
 
 - script: |
     echo "Terraform Init..."
-    terraform init
+    terraform init -var "key_value=$(key_value)"
     echo "Terraform Init complete."
   displayName: 'Terraform Init'
 
