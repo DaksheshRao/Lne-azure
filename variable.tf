@@ -2,18 +2,18 @@ variable "prefix" {
   default = "cuba-dakshesh"
 }
 
-variable "SUBSCRIPTION_ID" {
+variable "subscription_id" {
   
 }
 
-variable "CLIENT_ID" {
+variable "client_id" {
   
 }
 
-variable "CLIENT_SECRET" {
+variable "client_secret" {
   
 }
 
-variable "TENANT_ID" {
+variable "tenant_id" {
   
 }

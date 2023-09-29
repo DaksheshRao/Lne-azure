@@ -120,16 +120,16 @@ resource "azurerm_kubernetes_cluster" "k8s-cluster" {
   ]
 }
 
-resource "azurerm_container_registry" "example" {
-  name                = "containerRegistry1"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  sku                 = "Premium"
-}
+# resource "azurerm_container_registry" "example" {
+#   name                = "containerRegistry1"
+#   resource_group_name = azurerm_resource_group.example.name
+#   location            = azurerm_resource_group.example.location
+#   sku                 = "Premium"
+# }
 
-resource "azurerm_role_assignment" "example" {
-  principal_id                     = azurerm_kubernetes_cluster.k8s-cluster.kube
-  role_definition_name             = "AcrPull"
-  scope                            = azurerm_container_registry.example.id
-  skip_service_principal_aad_check = true
-}
+# resource "azurerm_role_assignment" "example" {
+#   principal_id                     = azurerm_kubernetes_cluster.k8s-cluster.kube
+#   role_definition_name             = "AcrPull"
+#   scope                            = azurerm_container_registry.example.id
+#   skip_service_principal_aad_check = true
+# }
