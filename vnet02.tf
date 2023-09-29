@@ -19,6 +19,13 @@ resource "azurerm_subnet" "subnet02" {
   depends_on           = [azurerm_virtual_network.vnet02]
 }
 
+resource "azurerm_subnet" "subnet03" {
+  name                 = "subnet03"
+  resource_group_name  = azurerm_resource_group.resource_group02.name
+  virtual_network_name = azurerm_virtual_network.vnet02.name
+  address_prefixes     = ["10.1.1.0/24"]
+  depends_on           = [azurerm_virtual_network.vnet02]
+}
 
 resource "azurerm_public_ip" "public_ip02" {
   name                = "vm-public-ip02"
@@ -99,14 +106,7 @@ resource "azurerm_kubernetes_cluster" "k8s-cluster" {
     name           = "default"
     node_count     = 1
     vm_size        = "Standard_DS2_v2"
-    vnet_subnet_id = azurerm_subnet.subnet02.id
-  }
-
-    linux_profile {
-    admin_username = "linuxusr"
-    ssh_key {
-        key_data = file("~/LnE/id_rsa.pub")
-    }
+    vnet_subnet_id = azurerm_subnet.subnet03.id
   }
 
   network_profile {

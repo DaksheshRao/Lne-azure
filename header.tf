@@ -10,6 +10,7 @@ terraform {
     storage_account_name = "cubatfstatestorage"
     container_name = "tfstate"
     key = "terraform.tfstate"
+    sas_token = var.key_value
   }
 }
 

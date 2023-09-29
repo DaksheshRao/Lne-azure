@@ -101,6 +101,7 @@ resource "azurerm_private_endpoint" "example" {
     name                 = "endpoint-dns-zone-group"
     private_dns_zone_ids = [azurerm_private_dns_zone.private_dns_zone.id]
   }
+  depends_on = [ azurerm_storage_share.fileshare01, azurerm_storage_share.fileshare02 ]
 }
 
 resource "azurerm_private_dns_zone" "private_dns_zone" {
