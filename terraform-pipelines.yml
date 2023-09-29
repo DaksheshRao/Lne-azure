@@ -24,21 +24,17 @@ variables:
   displayName: 'Install Terraform'
 
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
     terraform init
   displayName: 'Terraform Init'
   
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
     terraform fmt -check -diff
   displayName: 'Terraform Format Check'
   
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
-    terraform plan -var "client_id=$(clientId)" -var "client_secret=$(clientSecret)" -var "tenant_id=$(tenantId)" -var "subscription_id=$(azureSubscription)" -var "resource_group_name=$(resourceGroupName)"
+    terraform plan -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "subscription_id=$(SUBSCRIPTION_ID)"
   displayName: 'Terraform Plan'
 
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
-    terraform apply -auto-approve -var "client_id=$(clientId)" -var "client_secret=$(clientSecret)" -var "tenant_id=$(tenantId)" -var "subscription_id=$(azureSubscription)" -var "resource_group_name=$(resourceGroupName)"
+    terraform apply -auto-approve -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "subscription_id=$(SUBSCRIPTION_ID)"
   displayName: 'Terraform Apply'
