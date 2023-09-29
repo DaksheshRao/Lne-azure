@@ -26,6 +26,7 @@ resource "azurerm_public_ip" "public_ip02" {
   location            = azurerm_resource_group.resource_group02.location
   sku                 = "Standard"
   allocation_method   = "Static"
+  depends_on = [ azurerm_resource_group.resource_group02 ]
 }
 
 
@@ -83,6 +84,7 @@ resource "azurerm_application_gateway" "cuba-agw" {
     backend_address_pool_name  = "defaultbackendaddresspool"
     backend_http_settings_name = "defaulthttpSetting"
   }
+  depends_on = [ azurerm_resource_group.resource_group02, azurerm_subnet.subnet02, azurerm_public_ip.public_ip02 ]
 }
 
 
@@ -97,7 +99,14 @@ resource "azurerm_kubernetes_cluster" "k8s-cluster" {
     name           = "default"
     node_count     = 1
     vm_size        = "Standard_DS2_v2"
-    vnet_subnet_id = azurerm_subnet.subnet01.id
+    vnet_subnet_id = azurerm_subnet.subnet02.id
+  }
+
+    linux_profile {
+    admin_username = "linuxusr"
+    ssh_key {
+        key_data = file("~/LnE/id_rsa.pub")
+    }
   }
 
   network_profile {
