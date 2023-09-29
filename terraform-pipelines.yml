@@ -16,12 +16,6 @@ variables:
 steps:
 - checkout: self
 - task: CopyFiles@2
-  displayName: 'Copy files to $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)'
-    Contents: '**' # Copy all files
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
 - script: |
     sudo apt-get update -q -y
     sudo apt-get install -y curl unzip
@@ -32,21 +26,17 @@ steps:
   displayName: 'Install Terraform'
 
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
     terraform init
   displayName: 'Terraform Init'
   
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
     terraform fmt -check -diff
   displayName: 'Terraform Format Check'
   
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
     terraform plan -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "subscription_id=$(SUBSCRIPTION_ID)"
   displayName: 'Terraform Plan'
 
 - script: |
-    cd $(Build.ArtifactStagingDirectory)
     terraform apply -auto-approve -var "client_id=$(CLIENT_ID)" -var "client_secret=$(CLIENT_SECRET)" -var "tenant_id=$(TENANT_ID)" -var "subscription_id=$(SUBSCRIPTION_ID)"
   displayName: 'Terraform Apply'
