@@ -119,13 +119,13 @@ resource "azurerm_private_dns_zone_virtual_network_link" "example" {
 resource "azurerm_storage_share" "fileshare01" {
   name                 = "fileshare01"
   storage_account_name = azurerm_storage_account.storage_account.name
-  quota                = 5
+  quota                = 10
   depends_on           = [azurerm_storage_account.storage_account]
 }
 
 resource "azurerm_storage_share" "fileshare02" {
   name                 = "fileshare02"
   storage_account_name = azurerm_storage_account.storage_account.name
-  quota                = 5
+  quota                = 10
   depends_on           = [azurerm_storage_account.storage_account]
 }
